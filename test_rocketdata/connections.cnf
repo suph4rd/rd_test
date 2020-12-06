@@ -1,0 +1,5 @@
+[client]
+database = rd_database
+user = root
+password = 1234
+default-character-set = utf8
