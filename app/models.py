@@ -39,6 +39,9 @@ class Employes(models.Model):
         return self.salary_paid_set.filter(emploee=self).aggregate(Sum('sum_paid'))['sum_paid__sum']
     salary_all.short_description = 'Всего выплачено'
 
+    def salary_info(self):
+        return self.salary_paid_set.all()
+
     # @property
     # def chief(self):
     #     print(Employes.objects.get(position=self.position.chief))
