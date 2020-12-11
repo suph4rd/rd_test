@@ -1,11 +1,6 @@
 from django.db import models
 from django.db.models import Sum
-
-
-# class Levels_permission(models.Model):
-#     '''Привилегии'''
-#     level_permission = models.CharField(max_length=255, )
-from rest_framework.reverse import reverse
+from rest_framework_simplejwt.state import User
 
 
 class Position_relations(models.Model):
@@ -15,7 +10,6 @@ class Position_relations(models.Model):
     level = models.SmallIntegerField(verbose_name='Уровень должности')
 
     def __str__(self):
-        # return self.id
         return self.position
 
     class Meta:
@@ -32,8 +26,7 @@ class Employes(models.Model):
                               verbose_name='Должность')
     date_employ = models.DateField(auto_now=True, verbose_name='Дата приёма на работу')
     salary = models.FloatField('Заработная плата')
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # level_permission = models.ForeignKey(Levels_permission, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def salary_all(self):
         return self.salary_paid_set.filter(emploee=self).aggregate(Sum('sum_paid'))['sum_paid__sum']
@@ -41,14 +34,6 @@ class Employes(models.Model):
 
     def salary_info(self):
         return self.salary_paid_set.all()
-
-    # @property
-    # def chief(self):
-    #     print(Employes.objects.get(position=self.position.chief))
-    #     # return '<a href="%s">%s</a>' % (reverse("admin:auth_user_change", args=(self.user.id,)), escape(self.user))
-    #     # return '<a href="{0}">{0}</a>'.format(Employes.objects.get(position=self.position.chief).id)
-    #     # return self.position.chief
-    #     return Employes.objects.get(position=self.position.chief)
 
     def level(self):
         return self.position.level
@@ -67,7 +52,6 @@ class Salary_paid(models.Model):
     emploee = models.ForeignKey(Employes, on_delete=models.CASCADE)
     date_paid = models.DateField()
     sum_paid = models.FloatField()
-
 
     def __str__(self):
         return f"{self.emploee} {self.date_paid} {self.sum_paid}"

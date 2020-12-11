@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,10 +10,13 @@ class all_ListAPIView(ListAPIView):
     '''Вся информация о сотрудниках'''
     queryset = Employes.objects.all()
     serializer_class = all_serializer
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class level_APIView(APIView):
     '''Информация о сотрудниках по уровням'''
+    permission_classes = (permissions.IsAdminUser,)
+
     def get(self, request, level):
         queryset = Employes.objects.filter(position__level=level)
         serializer = all_serializer(queryset, many=True)

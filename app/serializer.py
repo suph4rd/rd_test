@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from app.models import Employes, Position_relations, Salary_paid
 
 
