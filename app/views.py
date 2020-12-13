@@ -2,7 +2,7 @@ from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from app.models import Employes, Salary_paid
+from app.models import Employes
 from app.serializer import all_serializer
 
 

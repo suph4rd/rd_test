@@ -9,6 +9,14 @@ class Position_relations(models.Model):
     chief = models.ForeignKey('self', on_delete=models.CASCADE, verbose_name='Начальник', blank=True, null=True)
     level = models.SmallIntegerField(verbose_name='Уровень должности')
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        print(Position_relations.objects.all().count())
+        if Position_relations.objects.all().count() < 5:
+            super().save()
+        else:
+            raise Exception('Превышение количества записей!')
+
     def __str__(self):
         return self.position
 
