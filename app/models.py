@@ -11,7 +11,6 @@ class Position_relations(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        print(Position_relations.objects.all().count())
         if Position_relations.objects.all().count() < 5:
             super().save()
         else:
