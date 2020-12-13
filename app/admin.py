@@ -21,8 +21,10 @@ class Emploees_admin(admin.ModelAdmin):
 
     def chief(self, obj):
         '''Ссылка на объект начальника'''
-        id = Employes.objects.get(position=obj.position.chief).id
-        chief = Employes.objects.get(position=obj.position.chief).position
+        obj_chief = obj.position.chief
+        queryset = Employes.objects.only('id','position').get(position=obj_chief)
+        id = queryset.id
+        chief = queryset.position
         return mark_safe('<a href="{0}">{1}</a>'.format(id, chief))
 
     chief.short_description = _("Начальник")
@@ -30,11 +32,13 @@ class Emploees_admin(admin.ModelAdmin):
 
 @admin.register(Salary_paid)
 class Salary_paid_admin(admin.ModelAdmin):
+    list_select_related = False
     list_display = ('emploee', 'date_paid', 'sum_paid')
 
 
 @admin.register(Position_relations)
 class Position_relations_admin(admin.ModelAdmin):
+    list_select_related = True
     list_display = ('position', 'chief', 'level')
 
 
