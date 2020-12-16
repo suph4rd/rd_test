@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_seed',
     'app'
 ]
 
