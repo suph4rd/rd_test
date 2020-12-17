@@ -66,6 +66,10 @@ REST_FRAMEWORK = {
     ),
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=5),
+}
+
 ROOT_URLCONF = 'test_rocketdata.urls'
 
 TEMPLATES = [

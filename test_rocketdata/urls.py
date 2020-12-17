@@ -17,13 +17,12 @@ import debug_toolbar
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
-from app.views import all_ListAPIView, level_APIView
+from app import urls
 from test_rocketdata import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
-    path('', all_ListAPIView.as_view(), name='all_info_about_emploees'),
-    path('<int:level>', level_APIView.as_view(), name='info_one_level_emploees'),
+    path('', include(urls)),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]
