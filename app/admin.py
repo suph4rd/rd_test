@@ -2,12 +2,16 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from app.models import Position_relations, Employes, Salary_paid
+from app.tasks import delete_user
 
 
 def delete_records(modeladmin, request, queryset):
     '''action на удаление информации о заработной плате всех выбраных сотрудников'''
-    for user in queryset:
-        Salary_paid.objects.filter(emploee=user).delete()
+    if queryset.count() > 20:
+        for user in queryset:
+            delete_user.delay(user.id)
+    else:
+        Salary_paid.objects.filter(emploee__in=queryset).delete()
 delete_records.short_description = "Удалить информацию о заработной плате выбраных сотрудников"
 
 
@@ -39,5 +43,3 @@ class Salary_paid_admin(admin.ModelAdmin):
 class Position_relations_admin(admin.ModelAdmin):
     list_select_related = True
     list_display = ('position', 'chief', 'level')
-
-
