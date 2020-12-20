@@ -8,16 +8,6 @@ services:
       - .:/usr/src/rd_test
     ports:
       - 8080:8080
-#    environment:
-#      - DEBUG=True
-#      - DB_NAME=postgres
-#      - DB_USER=postgres
-#      - DB_PASSWORD=postgres
-#      - DB_HOST=rd_db
-#      - DB_PORT=5432
-#      - INTERNAL_IPS=127.0.0.1
-#      - BROKER_URL=redis://redis:6379/0
-#      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - rd_db
       - rd_app_migrate
@@ -42,8 +32,6 @@ services:
     command: celery -A test_rocketdata worker
     volumes:
       - .:/usr/src/rd_test
-    links:
-      - redis
     depends_on:
       - rd_app_migrate
       - rd_app
