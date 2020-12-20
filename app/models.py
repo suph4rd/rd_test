@@ -6,7 +6,6 @@ from rest_framework_simplejwt.state import User
 class Position_relations(models.Model):
     '''Cвязь начальник и подчинённый'''
     position = models.CharField(max_length=255, unique=True, verbose_name='Должность')
-    chief = models.ForeignKey('self', on_delete=models.CASCADE, verbose_name='Начальник', blank=True, null=True)
     level = models.SmallIntegerField(verbose_name='Уровень должности')
 
     def save(self, force_insert=False, force_update=False, using=None,
@@ -20,8 +19,8 @@ class Position_relations(models.Model):
         return self.position
 
     class Meta:
-        verbose_name = 'Cвязь начальник и подчинённый'
-        verbose_name_plural = 'Cвязь начальников и подчинённых'
+        verbose_name = 'Должность и её уровень'
+        verbose_name_plural = 'Должность и её уровень'
 
 
 class Employes(models.Model):
@@ -31,23 +30,22 @@ class Employes(models.Model):
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
     position = models.ForeignKey(Position_relations, on_delete=models.CASCADE,
                               verbose_name='Должность')
+    chief = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     date_employ = models.DateField(auto_now=True, verbose_name='Дата приёма на работу')
-    salary = models.FloatField('Заработная плата')
+    salary = models.DecimalField(max_digits=12 ,decimal_places=2, verbose_name='Заработная плата')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def salary_all(self):
-        return self.salary_paid_set.filter(emploee=self).aggregate(Sum('sum_paid'))['sum_paid__sum']
+        return self.salary_paid_set.filter(emploee=self)\
+                                   .only('sum_paid')\
+                                   .aggregate(Sum('sum_paid'))['sum_paid__sum']
     salary_all.short_description = 'Всего выплачено'
 
     def salary_info(self):
         return self.salary_paid_set.all()
 
-    def level(self):
-        return self.position.level
-    level.short_description = 'Уровень'
-
     def __str__(self):
-        return f"{self.first_name} {self.last_name} {self.middle_name}"
+        return f"{self.pk} {self.first_name} {self.last_name} {self.middle_name}"
 
     class Meta:
         verbose_name = 'Работники'
@@ -56,9 +54,9 @@ class Employes(models.Model):
 
 class Salary_paid(models.Model):
     '''Данные по выплате заработной платы'''
-    emploee = models.ForeignKey(Employes, on_delete=models.CASCADE)
-    date_paid = models.DateField()
-    sum_paid = models.FloatField()
+    emploee = models.ForeignKey(Employes, verbose_name='Работник', on_delete=models.CASCADE)
+    date_paid = models.DateField(verbose_name='Дата выплаты')
+    sum_paid = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Сумма выплаты',)
 
     def __str__(self):
         return f"{self.emploee} {self.date_paid} {self.sum_paid}"

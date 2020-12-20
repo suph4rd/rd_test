@@ -16,8 +16,6 @@ if Position_relations.objects.count() < 5:
     level = (x for x in range(1, 6))
     seeder.add_entity(Position_relations, 5, {
         'position': lambda x: fake.job(),
-        'chief': lambda x: Position_relations.objects.last()
-                    if Position_relations.objects.exists() else None,
         'level': lambda x: next(level)
     })
 
@@ -25,6 +23,8 @@ seeder.add_entity(Employes, 10, {
     'first_name': lambda x: fake.first_name_male(),
     'last_name': lambda x: fake.last_name_male(),
     'middle_name': lambda x: fake.first_name_male(),
+    'chief': lambda x: Employes.objects.last()
+                    if Employes.objects.exists() else None,
     'position': lambda x: Position_relations.objects.order_by("?")[0],
     'date_employ': lambda x: fake.date(),
     'salary': lambda x: fake.pydecimal(positive=True, right_digits=2, max_value=15000),

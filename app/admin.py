@@ -19,27 +19,23 @@ delete_records.short_description = "Удалить информацию о за�
 class Emploees_admin(admin.ModelAdmin):
     list_select_related = True
     list_display = ('first_name', 'last_name', 'middle_name', 'position',
-                    'chief', 'salary', 'salary_all')
+                    'get_chief', 'salary', 'salary_all')
     list_filter = ('position','position__level')
     actions = [delete_records]
 
-    def chief(self, obj):
-        '''Ссылка на объект начальника'''
-        obj_chief = obj.position.chief
-        queryset = Employes.objects.only('id','position').filter(position=obj_chief)[:1].get()
-        id = queryset.id
-        chief = queryset.position
-        return mark_safe('<a href="{0}">{1}</a>'.format(id, chief))
-    chief.short_description = _("Начальник")
+    def get_chief(self, obj):
+        chief = str(obj.chief)
+        return mark_safe('<a href="{0}">{1}</a>'.format(chief.split()[0], chief))
+    get_chief.short_description = _("Начальник")
 
 
 @admin.register(Salary_paid)
 class Salary_paid_admin(admin.ModelAdmin):
-    list_select_related = False
+    list_select_related = True
     list_display = ('emploee', 'date_paid', 'sum_paid')
 
 
 @admin.register(Position_relations)
 class Position_relations_admin(admin.ModelAdmin):
     list_select_related = True
-    list_display = ('position', 'chief', 'level')
+    list_display = ('position', 'level')
