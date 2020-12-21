@@ -23,4 +23,4 @@ class all_serializer(serializers.ModelSerializer):
     salary_all = serializers.FloatField()
     class Meta:
         model = Employes
-        exclude = ['user']
+        exclude = ['user',]

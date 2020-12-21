@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  rd_app:
+    build: .
+    command: python3 /usr/src/rd_test/manage.py runserver 0.0.0.0:8080
+    volumes:
+      - .:/usr/src/rd_test
+    ports:
+      - 8080:8080
+    depends_on:
+      - rd_db
+      - rd_app_migrate
+      - redis
+
+  rd_app_migrate:
+    build: .
+    command: python3 /usr/src/rd_test/manage.py migrate
+    volumes:
+      - .:/usr/src/rd_test
+
+  rd_db:
+    image: postgres:10.1-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  redis:
+    image: redis:5-alpine
+
+  celeryworker:
+    build: .
+    command: celery -A rocketdata worker
+    volumes:
+      - .:/usr/src/rd_test
+    depends_on:
+      - rd_app_migrate
+      - rd_app
+      - redis
+
+  celerybeat:
+    build: .
+    command: celery -A rocketdata beat
+    volumes:
+      - .:/usr/src/rd_test
+    depends_on:
+      - rd_app_migrate
+      - rd_app
+      - redis
+
+volumes:
+  postgres_data:
+  celery_data:
