@@ -1,8 +1,3 @@
-import os
-import django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE",
-                      "test_rocketdata.settings")
-django.setup()
 import faker
 from django.contrib.auth.models import User
 from django_seed import Seed

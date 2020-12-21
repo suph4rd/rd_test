@@ -1,6 +1,6 @@
 import datetime
 from app.models import Salary_paid, Employes
-from test_rocketdata.celery import app
+from rocketdata.celery import app
 
 
 @app.task

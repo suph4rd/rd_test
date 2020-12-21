@@ -1,4 +1,4 @@
-"""test_rocketdata URL Configuration
+"""rocketdata URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
 from app import urls
-from test_rocketdata import settings
+from rocketdata import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),

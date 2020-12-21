@@ -2,8 +2,8 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'test_rocketdata.settings')
-app = Celery('test_rocketdata')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rocketdata.settings')
+app = Celery('rocketdata')
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks()
 
