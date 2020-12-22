@@ -8,9 +8,7 @@ from app.tasks import delete_user
 def delete_records(modeladmin, request, queryset):
     '''action на удаление информации о заработной плате всех выбраных сотрудников'''
     if queryset.count() > 20:
-        list_user_id = []
-        for user in queryset:
-            list_user_id.append(user.id)
+        list_user_id = list(queryset.values_list('id', flat=True))
         delete_user.delay(list_user_id)
     else:
         Salary_paid.objects.filter(emploee__in=queryset).delete()

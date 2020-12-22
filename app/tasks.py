@@ -5,7 +5,7 @@ from rocketdata.celery import app
 
 @app.task
 def delete_user(list_user_id):
-        Salary_paid.objects.filter(emploee__id__in=list_user_id).delete()
+    Salary_paid.objects.filter(emploee__id__in=list_user_id).delete()
 
 @app.task
 def set_salary():
