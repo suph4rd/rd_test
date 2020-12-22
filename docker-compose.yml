@@ -48,5 +48,4 @@ services:
       - redis
 
 volumes:
-  postgres_data:
-  celery_data:
+  postgres_data: /home/suph4rd/PycharmProjects/rd_test/db
