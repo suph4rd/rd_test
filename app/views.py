@@ -8,9 +8,10 @@ from app.serializer import all_serializer
 
 class all_ListAPIView(ListAPIView):
     '''Вся информация о сотрудниках'''
-    queryset = Employes.objects.select_related('position')\
-                                .all()\
-                                .defer('user')
+    queryset = Employes.objects.all() \
+                                .defer('user')\
+                                .select_related('position') \
+                                .prefetch_related('salary_paid_set')
     serializer_class = all_serializer
     permission_classes = (permissions.IsAdminUser,)
 
@@ -21,8 +22,9 @@ class level_APIView(APIView):
 
     def get(self, request, level):
         print(request.headers)
-        queryset = Employes.objects.select_related('position')\
-                                    .filter(position__level=level)\
+        queryset = Employes.objects.filter(position__level=level)\
+                                    .select_related('position')\
+                                    .prefetch_related('salary_paid_set')\
                                     .defer('user')
         serializer = all_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -34,6 +36,7 @@ class Yourself_APIView(APIView):
 
     def get(self, request):
         queryset = Employes.objects.select_related('position') \
+                                    .prefetch_related('salary_paid_set') \
                                     .defer('user')\
                                     .get(user__id=request.user.id)
         serializer = all_serializer(queryset)
