@@ -149,6 +149,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-BROKER_URL = config('BROKER_URL')
 BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+BROKER_URL = config('BROKER_URL')
 CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
