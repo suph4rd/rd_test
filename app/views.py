@@ -20,8 +20,7 @@ class level_APIView(APIView):
     '''Информация о сотрудниках по уровням'''
     permission_classes = (permissions.IsAdminUser,)
 
-    def get(self, request, level):
-        print(request.headers)
+    def get(self, request, level):        
         queryset = Employes.objects.filter(position__level=level)\
                                     .select_related('position')\
                                     .prefetch_related('salary_paid_set')\
