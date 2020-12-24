@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, CheckConstraint, Q
 from rest_framework_simplejwt.state import User
 
 
@@ -8,17 +8,16 @@ class Position_relations(models.Model):
     position = models.CharField(max_length=255, unique=True, verbose_name='Должность')
     level = models.SmallIntegerField(verbose_name='Уровень должности')
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if Position_relations.objects.all().count() < 5:
-            super().save()
-        else:
-            raise Exception('Превышение количества записей!')
-
     def __str__(self):
         return self.position
 
     class Meta:
+        constraints = [
+            CheckConstraint(
+                check=Q(level__lt=6),
+                name="amount_levels"
+            )
+        ]
         verbose_name = 'Должность и её уровень'
         verbose_name_plural = 'Должность и её уровень'
 
