@@ -6,7 +6,7 @@ from app.models import Employes
 from app.serializer import all_serializer
 
 
-class all_ListAPIView(ListAPIView):
+class AllListAPIView(ListAPIView):
     '''Вся информация о сотрудниках'''
     queryset = Employes.objects.all() \
                                 .defer('user')\
@@ -16,7 +16,7 @@ class all_ListAPIView(ListAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
 
-class level_APIView(APIView):
+class LevelAPIView(APIView):
     '''Информация о сотрудниках по уровням'''
     permission_classes = (permissions.IsAdminUser,)
 
@@ -29,7 +29,7 @@ class level_APIView(APIView):
         return Response(serializer.data)
 
 
-class Yourself_APIView(APIView):
+class YourselfAPIView(APIView):
     '''Информация о себе'''
     permission_classes = (permissions.IsAuthenticated,)
 
