@@ -1,6 +1,4 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
 from app.models import PositionRelations, SalaryPaid, Employee
 from app.tasks import delete_user
 
@@ -19,14 +17,9 @@ delete_records.short_description = "Удалить информацию о за�
 class EmployeeAdmin(admin.ModelAdmin):
     list_select_related = True
     list_display = ('first_name', 'last_name', 'middle_name', 'position',
-                    'get_chief', 'salary', 'salary_all')
-    list_filter = ('position','position__level')
+                    'get_chief_id', 'salary', 'salary_all')
+    list_filter = ('position', 'position__level')
     actions = [delete_records]
-
-    def get_chief(self, obj):
-        chief = str(obj.chief)
-        return mark_safe('<a href="{0}">{1}</a>'.format(chief.split()[0], chief))
-    get_chief.short_description = _("Начальник")
 
 
 @admin.register(SalaryPaid)

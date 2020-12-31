@@ -3,15 +3,15 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from app.models import Employee
-from app.serializer import all_serializer
+from app.serializer import AllSerializer
 
 
 class AllListAPIView(ListAPIView):
     '''All information about employees'''
-    queryset = Employee.objects.defer('user') \
+    queryset = Employee.objects.all()\
                                 .select_related('position') \
                                 .prefetch_related('salarypaid_set')
-    serializer_class = all_serializer
+    serializer_class = AllSerializer
     permission_classes = (permissions.IsAdminUser,)
 
 
@@ -24,7 +24,7 @@ class LevelAPIView(APIView):
                                     .defer('user') \
                                     .select_related('position')\
                                     .prefetch_related('salarypaid_set')
-        serializer = all_serializer(queryset, many=True)
+        serializer = AllSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -36,5 +36,5 @@ class YourselfAPIView(APIView):
         queryset = Employee.objects.select_related('position') \
                                     .prefetch_related('salarypaid_set')\
                                     .get(user__id=request.user.id)
-        serializer = all_serializer(queryset)
+        serializer = AllSerializer(queryset)
         return Response(serializer.data)

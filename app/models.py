@@ -1,5 +1,7 @@
 from django.db import models
 from django.db.models import Sum, CheckConstraint, Q
+from django.utils.translation import ugettext as _
+from django.utils.safestring import mark_safe
 from rest_framework_simplejwt.state import User
 
 
@@ -35,16 +37,20 @@ class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def salary_all(self):
-        return self.salarypaid_set.filter(employee=self)\
+        return '%s' % (self.salarypaid_set.filter(employee=self)\
                                    .only('sum_paid')\
-                                   .aggregate(Sum('sum_paid'))['sum_paid__sum']
+                                   .aggregate(Sum('sum_paid'))['sum_paid__sum'])
     salary_all.short_description = 'Всего выплачено'
 
     def salary_info(self):
         return self.salarypaid_set.all()
 
+    def get_chief_id(self):
+        return mark_safe('<a href="{0}">{1}</a>'.format(self.chief_id, "Начальник"))
+    get_chief_id.short_description = _("Объект начальника")
+
     def __str__(self):
-        return f"{self.pk} {self.first_name} {self.last_name} {self.middle_name}"
+        return f"{self.first_name} {self.last_name} {self.middle_name}"
 
     class Meta:
         verbose_name = 'Работники'
