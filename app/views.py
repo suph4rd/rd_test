@@ -2,41 +2,39 @@ from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from app.models import Employes
-from app.serializer import all_serializer
+from app.models import Employee
+from app.serializer import AllSerializer
 
 
 class AllListAPIView(ListAPIView):
-    '''Вся информация о сотрудниках'''
-    queryset = Employes.objects.all() \
-                                .defer('user')\
+    '''All information about employees'''
+    queryset = Employee.objects.all()\
                                 .select_related('position') \
-                                .prefetch_related('salary_paid_set')
-    serializer_class = all_serializer
+                                .prefetch_related('salarypaid_set')
+    serializer_class = AllSerializer
     permission_classes = (permissions.IsAdminUser,)
 
 
 class LevelAPIView(APIView):
-    '''Информация о сотрудниках по уровням'''
+    '''Information about employees by level'''
     permission_classes = (permissions.IsAdminUser,)
 
     def get(self, request, level):
-        queryset = Employes.objects.filter(position__level=level)\
+        queryset = Employee.objects.filter(position__level=level) \
+                                    .defer('user') \
                                     .select_related('position')\
-                                    .prefetch_related('salary_paid_set')\
-                                    .defer('user')
-        serializer = all_serializer(queryset, many=True)
+                                    .prefetch_related('salarypaid_set')
+        serializer = AllSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
 class YourselfAPIView(APIView):
-    '''Информация о себе'''
+    '''Information about yourself'''
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
-        queryset = Employes.objects.select_related('position') \
-                                    .prefetch_related('salary_paid_set') \
-                                    .defer('user')\
+        queryset = Employee.objects.select_related('position') \
+                                    .prefetch_related('salarypaid_set')\
                                     .get(user__id=request.user.id)
-        serializer = all_serializer(queryset)
+        serializer = AllSerializer(queryset)
         return Response(serializer.data)

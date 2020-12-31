@@ -1,26 +1,27 @@
 from rest_framework import serializers
-from app.models import Employes, Position_relations, Salary_paid
+from app.models import Employee, PositionRelations,SalaryPaid
 
 
-class Position_relations_serializer(serializers.ModelSerializer):
-    '''Сериализатор информации о иерархии должностей'''
+class PositionRelationsSerializer(serializers.ModelSerializer):
+    '''Serializer of information about hierarchy'''
     class Meta:
-        model = Position_relations
+        model = PositionRelations
         fields = '__all__'
 
 
-class Salary_paid_serializer(serializers.ModelSerializer):
-    '''Сериализатор информации о заработной плате'''
+class SalaryPaidSerializer(serializers.ModelSerializer):
+    '''Serializer of information about salary'''
     class Meta:
-        model = Salary_paid
+        model = SalaryPaid
         fields = '__all__'
 
 
-class all_serializer(serializers.ModelSerializer):
-    '''Сериализатор всей информации о сотрудниках'''
-    position = Position_relations_serializer()
-    salary_info = Salary_paid_serializer(many=True)
+class AllSerializer(serializers.ModelSerializer):
+    '''Serializer of all information about employee'''
+    position = PositionRelationsSerializer()
+    salary_info = SalaryPaidSerializer(many=True)
     salary_all = serializers.FloatField()
+
     class Meta:
-        model = Employes
+        model = Employee
         exclude = ['user',]

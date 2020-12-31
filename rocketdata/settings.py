@@ -39,12 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
     'rest_framework',
     'rest_framework_simplejwt',
-    'django_seed',
     'app'
 ]
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar', 'django_seed']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
