@@ -3,13 +3,22 @@ version: '3.8'
 services:
   rd_app:
     build: .
-    command: sh -c "python3 manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8080"
+    command: sh -c "gunicorn rocketdata.wsgi:application --bind 0.0.0.0:8081"
+    ports:
+      - 8081:8081
+    depends_on:
+      - rd_db
+      - redis
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/usr/src/rd_test/staticfiles
     ports:
       - 8080:8080
     depends_on:
       - rd_db
-      - redis
+      - rd_app
 
   rd_db:
     image: postgres:10.1-alpine
@@ -38,3 +47,4 @@ services:
 volumes:
   rd_test_data_postgres:
   rd_test_data_redis:
+  static_volume:
