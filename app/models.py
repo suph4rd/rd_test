@@ -5,8 +5,8 @@ from django.utils.safestring import mark_safe
 from rest_framework_simplejwt.state import User
 
 
-class PositionRelations(models.Model):
-    '''Cвязь начальник и подчинённый'''
+class PositionLevel(models.Model):
+    '''Hierarchy of position level'''
     position = models.CharField(max_length=255, unique=True, verbose_name='Должность')
     level = models.SmallIntegerField(verbose_name='Уровень должности')
 
@@ -25,15 +25,14 @@ class PositionRelations(models.Model):
 
 
 class Employee(models.Model):
-    '''Модель работников'''
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
-    position = models.ForeignKey(PositionRelations, on_delete=models.CASCADE,
+    position = models.ForeignKey(PositionLevel, on_delete=models.CASCADE,
                               verbose_name='Должность')
     chief = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     date_employ = models.DateField(auto_now=True, verbose_name='Дата приёма на работу')
-    salary = models.DecimalField(max_digits=12 ,decimal_places=2, verbose_name='Заработная плата')
+    salary = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Заработная плата')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def salary_all(self):
@@ -58,7 +57,7 @@ class Employee(models.Model):
 
 
 class SalaryPaid(models.Model):
-    '''Данные по выплате заработной платы'''
+    '''Information on payment salaries to employees'''
     employee = models.ForeignKey(Employee, verbose_name='Работник', on_delete=models.CASCADE)
     date_paid = models.DateField(verbose_name='Дата выплаты')
     sum_paid = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Сумма выплаты',)

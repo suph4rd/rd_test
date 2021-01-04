@@ -2,7 +2,8 @@ from django.core.management.base import BaseCommand
 import faker
 from django.contrib.auth.models import User
 from django_seed import Seed
-from app.models import Employee, SalaryPaid, PositionRelations
+from app.models import Employee, SalaryPaid, PositionLevel
+
 
 class Command(BaseCommand):
     help = 'Activate seeder'
@@ -14,9 +15,9 @@ class Command(BaseCommand):
         fake = faker.Faker()
         seeder = Seed.seeder()
 
-        if PositionRelations.objects.count() < 5:
+        if PositionLevel.objects.count() < 5:
             level = (x for x in range(1, 6))
-            seeder.add_entity(PositionRelations, 5, {
+            seeder.add_entity(PositionLevel, 5, {
                 'position': lambda x: fake.job(),
                 'level': lambda x: next(level)
             })
@@ -27,7 +28,7 @@ class Command(BaseCommand):
             'middle_name': lambda x: fake.first_name_male(),
             'chief': lambda x: Employee.objects.last()
             if Employee.objects.exists() else None,
-            'position': lambda x: PositionRelations.objects.order_by("?")[0],
+            'position': lambda x: PositionLevel.objects.order_by("?")[0],
             'date_employ': lambda x: fake.date(),
             'salary': lambda x: fake.pydecimal(positive=True, right_digits=2, max_value=15000),
             'user': lambda x: User.objects.create(
