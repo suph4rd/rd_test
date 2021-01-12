@@ -24,7 +24,16 @@ class PositionLevel(models.Model):
         verbose_name_plural = 'Должность и её уровень'
 
 
+class EmployeeManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset() \
+                .annotate(
+                    salary_all=Sum('salarypaid__sum_paid')
+                )
+
+
 class Employee(models.Model):
+    objects = EmployeeManager()
     first_name = models.CharField(max_length=255, verbose_name='Имя')
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
     middle_name = models.CharField(max_length=255, verbose_name='Отчество')
@@ -36,10 +45,9 @@ class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def salary_all(self):
-        return '%s' % (self.salarypaid_set.filter(employee=self)\
-                                   .only('sum_paid')\
-                                   .aggregate(Sum('sum_paid'))['sum_paid__sum'])
-    salary_all.short_description = 'Всего выплачено'
+        return self.salary_all
+
+    salary_all.short_description = "Всего выплачено"
 
     def salary_info(self):
         return self.salarypaid_set.all()
