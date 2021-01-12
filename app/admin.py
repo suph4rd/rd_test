@@ -17,7 +17,6 @@ delete_records.short_description = "Удалить информацию о за�
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_select_related = True
     list_display = ('first_name', 'last_name', 'middle_name', 'position',
                     'get_chief_id', 'salary', 'salary_all')
     list_filter = ('position', 'position__level')
