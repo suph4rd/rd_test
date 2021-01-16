@@ -4,7 +4,7 @@ from app.tasks import delete_user
 
 
 def delete_records(modeladmin, request, queryset):
-    '''action for delete information about salary of all selected employees'''
+    """action for delete information about salary of all selected employees"""
     if queryset.count() > 20:
         list_user_id = list(queryset.values_list('id', flat=True))
         delete_user.delay(list_user_id)
